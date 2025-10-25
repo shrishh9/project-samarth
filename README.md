@@ -73,5 +73,5 @@ project-samarth/
 
 ## 🌐 Live Demo
 
-[Link to deployed app]
+[https://agricultural-system-6zt8zjrwiekesd5ncubjzf.streamlit.app/]
 
