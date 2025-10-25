@@ -24,3 +24,7 @@ openpyxl==3.1.2
 # Additional dependencies for compatibility
 pydantic==2.5.0
 typing-extensions==4.9.0
+
+scipy>=1.11.1
+numpy>=1.26.4
+pandas>=2.2.1
