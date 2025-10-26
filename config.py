@@ -1,4 +1,4 @@
-﻿import os
+import os
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -24,4 +24,5 @@ PROCESSED_DATA_DIR = "./data/processed"
 
 # Logging
 LOG_FILE = "./logs/app.log"
+
 
