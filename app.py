@@ -99,11 +99,7 @@ def main():
         "✔️ Get actual prices and arrival details for agri commodities in Indian mandis.\n"
         "✔️ Find prices, varieties, markets, dates, districts, and crops.\n"
         "✔️ Data from daily government market (Agmarknet) arrivals and prices.\n\n"
-        "**Examples you can ask:**\n"
-        "- Modal price of tomato in Chittoor on 25/10/2025?\n"
-        "- Max price for banana in Mehsana today?\n"
-        "- What cabbages/varieties traded in Amreli?\n"
-        "- Price range for dry chillies in Guntur market on 25/10/2025?\n"
+ 
         "Only data present in Agmarknet is available.\n"
     )
 
