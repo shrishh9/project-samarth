@@ -8,7 +8,6 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from config import *
 import logging
-import pandas as pd
 import json
 
 # Increase recursion limit
@@ -45,6 +44,7 @@ def initialize_qa_system():
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
         vectorstore = Chroma(client=chroma_client, collection_name=COLLECTION_NAME, embedding_function=embeddings)
         llm = ChatGroq(groq_api_key=GROQ_API_KEY, model_name="llama-3.3-70b-versatile", temperature=0)
+        
         prompt_template = """Answer the question briefly based on the context:
 
 Context: {context}
@@ -71,8 +71,7 @@ def load_documents():
     try:
         with open("data/processed/documents.json", "r", encoding="utf-8") as f:
             docs = json.load(f)
-        df = pd.DataFrame([d["metadata"] for d in docs])
-        return df
+        return docs
     except Exception as e:
         logger.error(f"Failed to load documents: {e}")
         st.error("Error loading crop production data.")
@@ -92,31 +91,45 @@ def main():
     st.markdown('<h1 class="main-header">🌾 Project Samarth</h1>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Intelligent Q&A System for Indian Agricultural Data</p>', unsafe_allow_html=True)
 
-    qa_chain, vectorstore = initialize_qa_system()
-    df_docs = load_documents()
-
-    if qa_chain is None or df_docs is None:
-        st.error("System initialization failed, check logs.")
-        return
+    # Sidebar with project info and dataset details in a fun, engaging style
+    st.sidebar.markdown("## 🌱 Project Samarth")
+    st.sidebar.info(
+        "Hey there, welcome to **Project Samarth!** 🎉\n\n"
+        "Powered by official Indian government crop production data, this system answers your questions about "
+        "which crops grow where, production volumes, districts & states info — all based on real data from India's "
+        "Ministry of Agriculture. 🇮🇳🌾\n\n"
+        "**You can ask:**\n"
+        "- What's the wheat production in Punjab?\n"
+        "- Which districts produce the most rice in Uttar Pradesh?\n"
+        "- Total production volume for sugarcane in 2021?\n"
+        "- Details about cotton production in Maharashtra.\n\n"
+        "Give it a try! Your friendly AI agricultural assistant is here to help. 🚜🤖"
+    )
 
     st.sidebar.header("Sample Questions")
     sample_questions = [
         "What is the wheat production in Punjab?",
-        "Which state produced the most rice in 2020?",
-        "List the wheat production by district in Haryana.",
-        "What is the total crop production in Uttar Pradesh?",
+        "List top rice-producing districts in Uttar Pradesh.",
+        "How much sugarcane was produced in 2021?",
+        "Show cotton production details in Maharashtra."
     ]
     for q in sample_questions:
         if st.sidebar.button(q):
             st.session_state['current_question'] = q
 
-    user_question = st.text_area("Enter your question about agriculture data:",
-                                 value=st.session_state.get('current_question', ""),
-                                 height=100,
-                                 placeholder="Try questions like 'Wheat production in Punjab'")
+    user_question = st.text_area(
+        "Enter your question about crop production:",
+        value=st.session_state.get('current_question', ""),
+        height=100,
+        placeholder="Try questions like 'Wheat production in Punjab' or 'Rice production in Uttar Pradesh'"
+    )
 
     if st.button("Get Answer") and user_question:
         with st.spinner("Fetching answer..."):
+            qa_chain, vectorstore = initialize_qa_system()
+            if qa_chain is None:
+                st.error("QA system initialization error. Check logs.")
+                return
             result = qa_chain({"query": user_question})
             st.markdown("### Answer")
             st.write(result["result"])
