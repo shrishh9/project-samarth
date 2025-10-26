@@ -42,20 +42,20 @@ def initialize_qa_system():
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
         vectorstore = Chroma(client=chroma_client, collection_name=COLLECTION_NAME, embedding_function=embeddings)
         llm = ChatGroq(groq_api_key=GROQ_API_KEY, model_name="llama-3.3-70b-versatile", temperature=0)
-        prompt_template = """You are an assistant for agricultural market prices and arrivals in India.
-You have access to daily arrivals data that includes:
-- state, district, market
-- commodity (crop)
-- variety, grade
-- arrival date
-- minimum, maximum, and modal prices
+        prompt_template = """You are an assistant for India's agricultural mandi data.
+You know about daily arrivals and prices for crops in Indian markets (mandis). Data fields:
+- state, district, market, commodity, variety, grade, arrival_date, min_price, max_price, modal_price
 
-Always answer with specific prices, varieties, markets, or districts as per the question.
-Cite your source as 'Agmarknet (Government of India) daily market arrivals and prices'.
+Answer strictly using this information. No guesses about production, area or yield.
 
-Context: {context}
+For every answer, cite as:
+Agmarknet (Government of India) market arrivals and prices.
 
-Question: {question}
+Context:
+{context}
+
+Question:
+{question}
 
 Your answer:
 """
@@ -82,41 +82,49 @@ def load_documents():
         return docs
     except Exception as e:
         logger.error(f"Failed to load documents: {e}")
-        st.error("Error loading agricultural market data.")
+        st.error("Error loading mandi data.")
         return None
 
 def format_sources(source_documents):
-    return ["Agmarknet (Government of India) daily market arrivals and prices"]
+    # Always cite Agmarknet/Government of India
+    return ["Agmarknet (Government of India) market arrivals and prices"]
 
 def main():
     st.markdown('<h1 class="main-header">🌾 Project Samarth</h1>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">India Market Price & Crop Arrivals Q&A System</p>', unsafe_allow_html=True)
 
-    st.sidebar.markdown("## 🏪 About This Project")
+    st.sidebar.markdown("## 🏬 About Project Samarth")
     st.sidebar.info(
-        "**Project Samarth is your AI-powered mandi insights buddy!**\n\n"
-        "📉 Uses real, daily market arrivals and price data from Agmarknet.\n\n"
-       
-        "**All answers cite 'Agmarknet (Government of India) daily market arrivals and prices'.**"
+        "**Samarth is your AI-powered mandi market data buddy!**\n\n"
+        "✔️ Get actual prices and arrival details for agri commodities in Indian mandis.\n"
+        "✔️ Find prices, varieties, markets, dates, districts, and crops.\n"
+        "✔️ Data from daily government market (Agmarknet) arrivals and prices.\n\n"
+        "**Examples you can ask:**\n"
+        "- Modal price of tomato in Chittoor on 25/10/2025?\n"
+        "- Max price for banana in Mehsana today?\n"
+        "- What cabbages/varieties traded in Amreli?\n"
+        "- Price range for dry chillies in Guntur market on 25/10/2025?\n"
+        "Only data present in Agmarknet is available.\n"
     )
 
     st.sidebar.header("Sample Questions")
     sample_questions = [
-        "What is the modal price of tomato in Chittoor on 25/10/2025?",
-        "What is the highest price for banana in Mehsana on 25/10/2025?",
-        "List commodities traded in Guntur market on 25/10/2025.",
-        "What varieties of cabbage were traded in Amreli?",
-        "Price range for dry chillies in Guntur on 25/10/2025?"
+        "Modal price of tomato in Chittoor on 25/10/2025?",
+        "Highest price for banana in Mehsana on 25/10/2025?",
+        "Commodities traded in Guntur market on 25/10/2025.",
+        "Varieties of cabbage traded in Amreli?",
+        "Price range for dry chillies in Guntur on 25/10/2025?",
+        "What is the price of brinjal in Bilimora today?"
     ]
     for q in sample_questions:
         if st.sidebar.button(q):
             st.session_state['current_question'] = q
 
     user_question = st.text_area(
-        "Ask about mandi prices, commodities, districts, varieties, dates:",
+        "Ask about mandi prices, arrivals, varieties, markets, dates:",
         value=st.session_state.get('current_question', ""),
         height=100,
-        placeholder="E.g. 'Modal price of paddy in Krishna on 25/10/2025'"
+        placeholder="Example: 'Modal price of cabbage in Chittoor on 25/10/2025'"
     )
 
     if st.button("Get Answer") and user_question:
@@ -128,7 +136,7 @@ def main():
             result = qa_chain({"query": user_question})
             st.markdown("### Answer")
             st.write(result["result"])
-            st.markdown("**Source:** Agmarknet (Government of India) daily market arrivals and prices")
+            st.markdown("**Source:** Agmarknet (Government of India) market arrivals and prices")
 
 if __name__ == "__main__":
     main()
