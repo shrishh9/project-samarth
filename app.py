@@ -89,39 +89,41 @@ def format_sources(source_documents):
 
 def main():
     st.markdown('<h1 class="main-header">🌾 Project Samarth</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">Intelligent Q&A System for Indian Agricultural Data</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">Intelligent Q&A System for Indian Crop Production Data</p>', unsafe_allow_html=True)
 
-    # Sidebar with project info and dataset details in a fun, engaging style
-    st.sidebar.markdown("## 🌱 Project Samarth")
+    # Fun, friendly sidebar section about the data and what you can ask
+    st.sidebar.markdown("## 🌟 About This Project")
     st.sidebar.info(
-        "Hey there, welcome to **Project Samarth!** 🎉\n\n"
-        "Powered by official Indian government crop production data, this system answers your questions about "
-        "which crops grow where, production volumes, districts & states info — all based on real data from India's "
-        "Ministry of Agriculture. 🇮🇳🌾\n\n"
-        "**You can ask:**\n"
-        "- What's the wheat production in Punjab?\n"
-        "- Which districts produce the most rice in Uttar Pradesh?\n"
-        "- Total production volume for sugarcane in 2021?\n"
-        "- Details about cotton production in Maharashtra.\n\n"
-        "Give it a try! Your friendly AI agricultural assistant is here to help. 🚜🤖"
+        "**Samarth is your AI-powered crop statistics buddy!**\n\n"
+        "🚜 Uses real open-government data on Indian crop production.\n\n"
+        "🔍 Find answers for:\n"
+        "- Production of any crop by state, district, or year.\n"
+        "- Which region produced the most wheat/rice/cotton etc.\n"
+        "- Area (in hectares) sown under a given crop.\n"
+        "- What crops are grown in a district/state.\n"
+        "- Multi-year and seasonal totals for any crop-region combo.\n\n"
+        "[Dataset: District-wise, season-wise crop production (OGD, India)](https://www.data.gov.in/catalog/district-wise-season-wise-crop-production-statistics-0)\n\n"
+        "🌾📈 **Try this power!**"
     )
 
     st.sidebar.header("Sample Questions")
     sample_questions = [
-        "What is the wheat production in Punjab?",
-        "List top rice-producing districts in Uttar Pradesh.",
-        "How much sugarcane was produced in 2021?",
-        "Show cotton production details in Maharashtra."
+        "What was the wheat production in Punjab in 2020?",
+        "Which district produced the most rice in West Bengal?",
+        "Total area cultivated for cotton in Maharashtra, 2018?",
+        "List all crops grown in Raipur district.",
+        "How much sugarcane was produced in Uttar Pradesh in 2019?",
+        "Top producing state for groundnut in 2017?"
     ]
     for q in sample_questions:
         if st.sidebar.button(q):
             st.session_state['current_question'] = q
 
     user_question = st.text_area(
-        "Enter your question about crop production:",
+        "Ask about India's crop production:",
         value=st.session_state.get('current_question', ""),
         height=100,
-        placeholder="Try questions like 'Wheat production in Punjab' or 'Rice production in Uttar Pradesh'"
+        placeholder="Try questions like 'Wheat production in Punjab 2020' or 'Crops grown in Mysore'"
     )
 
     if st.button("Get Answer") and user_question:
