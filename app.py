@@ -96,12 +96,7 @@ def main():
     st.sidebar.info(
         "**Samarth is your AI-powered mandi insights buddy!**\n\n"
         "📉 Uses real, daily market arrivals and price data from Agmarknet.\n\n"
-        "🔎 What can you ask?\n"
-        "- What is the modal price of tomato in Chittoor on 25/10/2025?\n"
-        "- What was the highest price for banana in Mehsana?\n"
-        "- List commodities traded in Guntur today.\n"
-        "- What varieties of cabbages were traded in Amreli?\n"
-        "- Price range for dry chillies in Guntur on 25/10/2025?\n\n"
+       
         "**All answers cite 'Agmarknet (Government of India) daily market arrivals and prices'.**"
     )
 
