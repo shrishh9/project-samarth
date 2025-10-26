@@ -94,7 +94,7 @@ def main():
 
     st.sidebar.markdown("## 🏪 About This Project")
     st.sidebar.info(
-        "**Samarth is your AI-powered mandi insights buddy!**\n\n"
+        "**Project Samarth is your AI-powered mandi insights buddy!**\n\n"
         "📉 Uses real, daily market arrivals and price data from Agmarknet.\n\n"
        
         "**All answers cite 'Agmarknet (Government of India) daily market arrivals and prices'.**"
